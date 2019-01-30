@@ -6,7 +6,7 @@ A vagrant script for setting up a Kubernetes cluster using Kubeadm
  * **[Vagrant 2.1.4+](https://www.vagrantup.com)**
  * **[Virtualbox 5.2.18+](https://www.virtualbox.org)**
 
-## How to Run
+## How to Run kube cluster
 
 Execute the following vagrant command to start a new Kubernetes cluster, this will start one master and two nodes:
 
@@ -32,9 +32,22 @@ servers = [
 ]
  ```
 
-As you can see above, you can also configure IP address, memory and CPU in the servers array. 
+As you can see above, you can also configure IP address, memory and CPU in the servers array.
 
-## Clean-up
+## Setting up spinnaker on the local cluster
+
+Steps are outlined [HERE](https://www.spinnaker.io/setup/install/halyard/)
+
+Commands:
+  ```
+  curl https://raw.githubusercontent.com/spinnaker/halyard/master/install/macos/InstallHalyard.sh -o /tmp/install_halyard.sh
+
+  sudo bash /tmp/install_halyard.sh
+
+  hal -v
+  ```
+
+## Cluster Clean-up
 
 Execute the following command to remove the virtual machines created for the Kubernetes cluster.
 ```
