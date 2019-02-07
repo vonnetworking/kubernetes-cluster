@@ -45,7 +45,52 @@ Commands:
   sudo bash /tmp/install_halyard.sh
 
   hal -v
+
+  hal config provider kubernetes enable
+
+  CONTEXT=$(kubectl config current-context)
+  export ACCOUNT=my-k8s-v2-account
+
+  hal config provider kubernetes account add $ACCOUNT \
+    --provider-version v2 \
+    --context $CONTEXT
+
+  hal config features edit --artifacts true
+
+  hal config deploy edit --type distributed --account-name $ACCOUNT
+
+  #reduce rbac restrictions...dont do this in prod, but needed for helm installs
+  kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts;
+
+  brew install minio
+
+  #Start minio service
+  minio server /tmp/data &
+
+  #record startup info...apparently not in stdout or stderr...Endpoint, AccessKey, SecretKey
+
+  #turn off s3 versioning in spinnaker
+
+  mkdir -p ~/.hal/default/profiles/
+  echo "spinnaker.s3.versioning: false" > ~/.hal/default/profiles/front50-local.yml
+
+  echo $MINIO_SECRET_KEY | hal config storage s3 edit --endpoint $ENDPOINT \
+    --access-key-id $MINIO_ACCESS_KEY \
+    --secret-access-key # will be read on STDIN to avoid polluting your
+                        # ~/.bash_history with a secret
+
+  hal config storage edit --type s3
+
+  hal version list
+
+  hal config version edit --version $VERSION
+
+  hal deploy apply
+
+  hal deploy connect
   ```
+##LEFT OFF AT CONFIGURING STORAGE
+https://www.spinnaker.io/setup/install/storage/
 
 ## Cluster Clean-up
 
